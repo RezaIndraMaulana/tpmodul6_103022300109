@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,10 @@ namespace tpmodul6_103022300109
         private int playCount;
         public SayaTubeVideo(string title)
         {
-            if (title == null || title == "")
+            Debug.Assert(title != null && title.Length <= 100, "Judul tidak boleh null dan maksimal 100 karakter");
+            if (title == null || title.Length > 100)
             {
-                throw new ArgumentException("Judul tidak boleh kosong");
+                throw new ArgumentException("Judul tidak boleh null atau lebih dari 100 karakter");
             }
 
             Random random = new Random();
@@ -26,13 +28,25 @@ namespace tpmodul6_103022300109
 
         public void IncreasePlayCount(int count)
         {
-            if (count < 0)
+            Debug.Assert(count > 0 && count <= 10000000, "Play count harus antara 1 hingga 10.000.000");
+            if (count <= 0 || count > 10000000)
             {
-                throw new ArgumentException("Play count tidak boleh negatif");
+                throw new ArgumentException("Play count harus antara 1 hingga 10.000.000");
             }
 
-            playCount += count;
+            try
+            {
+                checked
+                {
+                    playCount += count;
+                }
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Terjadi overflow pada play count!");
+            }
         }
+
         public void PrintVideoDetails()
         {
             Console.WriteLine("ID Video: " + id);
